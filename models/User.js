@@ -1,19 +1,38 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  name: String,
+  name: { type: String, required: true },
 
   email: {
     type: String,
-    unique: true
+    unique: true,
+    required: true
   },
 
-  password: String,
+  password: { type: String, required: true },
 
   role: {
     type: String,
-    enum: ["superadmin", "admin", "user"],
+    enum: ["superadmin", "vendor", "admin", "user"],
     default: "user"
+  },
+
+  // For vendor accounts
+  status: {
+    type: String,
+    enum: ["pending", "active", "deactivated"],
+    default: "pending"
+  },
+
+  company: {
+    name: String,
+    address: String,
+    phone: String
+  },
+
+  subscription: {
+    plan: { type: mongoose.Schema.Types.ObjectId, ref: "SubscriptionPlan", default: null },
+    expiresAt: { type: Date, default: null }
   },
 
   createdBy: {
