@@ -1,0 +1,251 @@
+{
+  "info": {
+    "name": "Event Management API - Full",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "event-management-full"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Create Superadmin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Admin\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}" },
+            "url": "{{base_url}}/api/auth/create-superadmin"
+          }
+        },
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"User\",\n  \"email\": \"user@example.com\",\n  \"password\": \"userpass\"\n}" },
+            "url": "{{base_url}}/api/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}" },
+            "url": "{{base_url}}/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Create Admin (superadmin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Admin2\",\n  \"email\": \"admin2@example.com\",\n  \"password\": \"adminpass\"\n}" },
+            "url": "{{base_url}}/api/admin/create-admin"
+          }
+        },
+        {
+          "name": "Create User by Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"UserByAdmin\",\n  \"email\": \"userbyadmin@example.com\",\n  \"password\": \"userpass\"\n}" },
+            "url": "{{base_url}}/api/admin/create-user"
+          }
+        },
+        {
+          "name": "Update User Role (superadmin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"userId\": \"<USER_ID>\",\n  \"role\": \"admin\"\n}" },
+            "url": "{{base_url}}/api/admin/update-role"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vendors",
+      "item": [
+        {
+          "name": "Register Vendor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Vendor Co\",\n  \"email\": \"vendor@example.com\",\n  \"password\": \"vendorpass\",\n  \"company\": { \"name\": \"Vendor Co\", \"address\": \"Addr\", \"phone\": \"123\" }\n}" },
+            "url": "{{base_url}}/api/vendor/register"
+          }
+        },
+        {
+          "name": "List Vendors (superadmin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/vendor/"
+          }
+        },
+        {
+          "name": "Approve Vendor (superadmin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/vendor/approve/<VENDOR_ID>"
+          }
+        },
+        {
+          "name": "Deactivate Vendor (superadmin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/vendor/deactivate/<VENDOR_ID>"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Create Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Birthday Party\",\n  \"type\": \"Birthday\",\n  \"date\": \"2026-04-01\",\n  \"location\": \"City Hall\",\n  \"budget\": 1000\n}" },
+            "url": "{{base_url}}/api/events"
+          }
+        },
+        {
+          "name": "Add Expense",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Cake\",\n  \"category\": \"Food\",\n  \"amount\": 200\n}" },
+            "url": "{{base_url}}/api/events/<EVENT_ID>/expenses"
+          }
+        },
+        {
+          "name": "Add Income",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Ticket Sales\",\n  \"amount\": 500\n}" },
+            "url": "{{base_url}}/api/events/<EVENT_ID>/incomes"
+          }
+        },
+        {
+          "name": "Event Summary",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/events/<EVENT_ID>/summary"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subscriptions",
+      "item": [
+        {
+          "name": "Create Plan (superadmin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Basic\",\n  \"description\": \"Basic plan\",\n  \"price\": 10,\n  \"eventLimit\": 15,\n  \"durationDays\": 30\n}" },
+            "url": "{{base_url}}/api/subscriptions/plans"
+          }
+        },
+        {
+          "name": "List Plans (superadmin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/subscriptions/plans"
+          }
+        },
+        {
+          "name": "Assign Plan to Vendor (superadmin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"vendorId\": \"<VENDOR_ID>\",\n  \"planId\": \"<PLAN_ID>\"\n}" },
+            "url": "{{base_url}}/api/subscriptions/assign"
+          }
+        },
+        {
+          "name": "Get Vendor Subscription",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/subscriptions/vendor/<VENDOR_ID>"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Billing",
+      "item": [
+        {
+          "name": "Create Invoice (superadmin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"vendorId\": \"<VENDOR_ID>\",\n  \"amount\": 100,\n  \"description\": \"Monthly subscription\"\n}" },
+            "url": "{{base_url}}/api/billing/invoices"
+          }
+        },
+        {
+          "name": "Mark Invoice Paid (superadmin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/billing/invoices/<INVOICE_ID>/pay"
+          }
+        },
+        {
+          "name": "List Transactions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/billing/transactions"
+          }
+        }
+      ]
+    }
+  ]
+}

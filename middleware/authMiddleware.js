@@ -33,3 +33,6 @@ exports.authorizeRoles = (...roles) => {
     next();
   };
 };
+
+// Alias used by routes when importing the middleware as a namespace
+exports.protect = exports.verifyToken;

@@ -1,35 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const { updateUserRole } = require("../controllers/adminController");
 
-const {
-  createAdmin,
-  createUserByAdmin
-} = require("../controllers/adminController");
-
-const {
-  verifyToken,
-  authorizeRoles
-} = require("../middleware/authMiddleware");
+const admincontroller = require("../controllers/adminController");
+const authcontroller = require("../middleware/authMiddleware");
 
 router.post(
   "/create-admin",
-  verifyToken,
-  authorizeRoles("superadmin"),
-  createAdmin
+  authcontroller.protect,
+  authcontroller.authorizeRoles("superadmin"),
+  admincontroller.createAdmin
 );
 
 router.post(
   "/create-user",
-  verifyToken,
-  authorizeRoles("admin"),
-  createUserByAdmin
+  authcontroller.protect,
+  authcontroller.authorizeRoles("admin"),
+  admincontroller.createUserByAdmin
 );
 
 router.put(
   "/update-role",
-  verifyToken,
-  authorizeRoles("superadmin"),
-  updateUserRole
+  authcontroller.protect,
+  authcontroller.authorizeRoles("superadmin"),
+  admincontroller.updateUserRole
 );
+
 module.exports = router;
