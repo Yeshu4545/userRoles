@@ -12,6 +12,7 @@ const eventRoutes = require("./routes/eventRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
 
 const billingRoutes = require("./routes/billingRoutes");
+const userRoutes = require("./routes/userRoutes");
 const app = express();
 
 app.use(cors());
@@ -23,6 +24,7 @@ app.use("/api/vendor", vendorRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/billing", billingRoutes);
+app.use('/api/users', userRoutes);
 
 app.get("/", (req, res) => {
   res.send("API Running");

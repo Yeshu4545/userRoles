@@ -11,6 +11,9 @@ router.post(
   admincontroller.createAdmin
 );
 
+// Dashboard
+router.get('/dashboard', authcontroller.protect, authcontroller.authorizeRoles('superadmin'), admincontroller.dashboard);
+
 router.post(
   "/create-user",
   authcontroller.protect,

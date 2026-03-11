@@ -82,3 +82,62 @@ exports.getEventSummary = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.listEvents = async (req, res) => {
+  try {
+    const q = {};
+    if (req.query.createdBy) q.createdBy = req.query.createdBy;
+    if (req.query.vendor) q.vendor = req.query.vendor;
+    if (req.query.type) q.type = req.query.type;
+
+    const Event = require('../models/Event');
+    const events = await Event.find(q).sort({ createdAt: -1 }).limit(100);
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getEvent = async (req, res) => {
+  try {
+    const Event = require('../models/Event');
+    const event = await Event.findById(req.params.id).populate('createdBy', 'name email').populate('vendor', 'name email');
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+    res.json(event);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateEvent = async (req, res) => {
+  try {
+    const Event = require('../models/Event');
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+
+    const { title, type, date, location, client, budget } = req.body;
+    if (title) event.title = title;
+    if (type) event.type = type;
+    if (date) event.date = date;
+    if (location) event.location = location;
+    if (client) event.client = client;
+    if (budget !== undefined) event.budget = budget;
+
+    await event.save();
+    res.json(event);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.deleteEvent = async (req, res) => {
+  try {
+    const Event = require('../models/Event');
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+    await event.remove();
+    res.json({ message: 'Event deleted' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

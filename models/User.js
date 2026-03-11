@@ -35,6 +35,9 @@ const userSchema = new mongoose.Schema({
     expiresAt: { type: Date, default: null }
   },
 
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
+
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
