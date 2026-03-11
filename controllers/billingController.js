@@ -42,3 +42,27 @@ exports.listTransactions = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.listInvoices = async (req, res) => {
+  try {
+    const Transaction = require('../models/Transaction');
+    const q = {};
+    if (req.query.vendorId) q.vendor = req.query.vendorId;
+    if (req.query.status) q.status = req.query.status;
+    const txs = await Transaction.find(q).populate('vendor', 'name email');
+    res.json(txs);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getInvoice = async (req, res) => {
+  try {
+    const Transaction = require('../models/Transaction');
+    const tx = await Transaction.findById(req.params.id).populate('vendor', 'name email');
+    if (!tx) return res.status(404).json({ message: 'Invoice not found' });
+    res.json(tx);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

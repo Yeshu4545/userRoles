@@ -99,3 +99,80 @@ exports.updateUserRole = async (req, res) => {
     res.status(500).json(error.message);
   }
 };
+
+exports.dashboard = async (req, res) => {
+  try {
+    const User = require('../models/User');
+    const Event = require('../models/Event');
+    const SubscriptionPlan = require('../models/SubscriptionPlan');
+    const Transaction = require('../models/Transaction');
+
+    const totalVendors = await User.countDocuments({ role: 'vendor' });
+    const totalUsers = await User.countDocuments({ role: 'user' });
+    const totalEvents = await Event.countDocuments();
+    const activeSubscriptions = await User.countDocuments({ 'subscription.plan': { $ne: null } });
+
+    // simple revenue: sum of paid transactions
+    const revenueAgg = await Transaction.aggregate([
+      { $match: { status: 'paid' } },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ]);
+    const totalRevenue = (revenueAgg[0] && revenueAgg[0].total) || 0;
+
+    res.json({ totalVendors, totalUsers, totalEvents, activeSubscriptions, totalRevenue });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.listUsers = async (req, res) => {
+  try {
+    const User = require('../models/User');
+    const q = {};
+    if (req.query.role) q.role = req.query.role;
+    const users = await User.find(q).select('-password');
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getUser = async (req, res) => {
+  try {
+    const User = require('../models/User');
+    const user = await User.findById(req.params.id).select('-password');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateUser = async (req, res) => {
+  try {
+    const User = require('../models/User');
+    const { name, email, company } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (company) user.company = company;
+    await user.save();
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.deactivateUser = async (req, res) => {
+  try {
+    const User = require('../models/User');
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    user.status = 'deactivated';
+    await user.save();
+    res.json({ message: 'User deactivated', user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

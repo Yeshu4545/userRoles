@@ -16,4 +16,8 @@ router.get("/transactions", authcontroller.protect, (req, res, next) => {
   return res.status(403).json({ message: "Access denied" });
 }, billingcontroller.listTransactions);
 
+// List invoices
+router.get('/invoices', authcontroller.protect, authcontroller.authorizeRoles('superadmin','vendor'), billingcontroller.listInvoices);
+router.get('/invoices/:id', authcontroller.protect, authcontroller.authorizeRoles('superadmin','vendor'), billingcontroller.getInvoice);
+
 module.exports = router;
